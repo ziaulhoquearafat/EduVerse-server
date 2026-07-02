@@ -3,7 +3,7 @@ import mongoose, { Document, Schema } from "mongoose";
 export interface IUser extends Document {
   name: string;
   email: string;
-  password: string;
+  password?: string;
   isVerified: boolean;
   role: "user" | "instructor" | "admin";
   avatar?: {
@@ -23,4 +23,95 @@ export interface IUser extends Document {
   resetPasswordOtpExpiry?: Date | null;
 }
 
+const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+const UserSchema = new Schema<IUser>(
+  {
+    name: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type: String,
+      unique: true,
+      match: [emailRegex, "Please fill a valid email address"],
+      required: true,
+    },
+    password: {
+      type: String,
+      required: false,
+      select: false,
+    },
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
+    role: {
+      type: String,
+      enum: ["user", "instructor", "admin"],
+      default: "user",
+    },
+    avatar: {
+      public_id: {
+        type: String,
+        default: null,
+      },
+      url: {
+        type: String,
+        default:
+          'https://res.cloudinary.com/dj8fpb6tq/image/upload/v1758530649/qllwshtuqe3njr8pzim6.png"',
+      },
+    },
+    signature: {
+      public_id: {
+        type: String,
+        default: null,
+      },
+      url: {
+        type: String,
+        default: null,
+      },
+    },
+    username: {
+      type: String,
+    },
+    refreshToken: {
+      type: String,
+      default: null,
+      select: false,
+    },
+    refreshTokenExpiry: {
+      type: Date,
+      default: null,
+      select: false,
+    },
+    activationCode: {
+      type: String,
+      default: null,
+      select: false,
+    },
+    activationCodeExpiry: {
+      type: Date,
+      default: null,
+      select: false,
+    },
+    resetPasswordOtp: {
+      type: String,
+      default: null,
+      select: false,
+    },
+    resetPasswordOtpExpiry: {
+      type: Date,
+      default: null,
+      select: false,
+    },
+  },
+  {
+    timestamps: true,
+  },
+);
 
+UserSchema.index({ role: 1 });
+
+const User = mongoose.model<IUser>("User", UserSchema);
+
+export default User;
