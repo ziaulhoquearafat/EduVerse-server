@@ -58,7 +58,7 @@ const UserSchema = new Schema<IUser>(
       url: {
         type: String,
         default:
-          'https://res.cloudinary.com/dj8fpb6tq/image/upload/v1758530649/qllwshtuqe3njr8pzim6.png"',
+          'https://res.cloudinary.com/dj8fpb6tq/image/upload/v1758530649/qllwshtuqe3njr8pzim6.png',
       },
     },
     signature: {
